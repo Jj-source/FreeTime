@@ -5,12 +5,11 @@ import { environment } from '../environments/environment';
 import { pool } from './Settings';
 
 let Users = [
-  {id:"id1", name: 'Jacopo', oramin: 15, oramax:24, act:"Mangiare fuori", place:"Tesoriera" },
+  {name: 'Jacopo', oramin: 15, oramax:24, act:"Mangiare fuori", place:"Tesoriera" },
 ];
 let nomeSerata="Home";
-let postoVoto="Tesoriera";
-let oraMinVoto="15";
-let oraMaxVoto="24";
+let postoVoto="Ruffini";
+let orario="Orario migliore:";
 const Home: React.FC = () => {
 
   async function selectAll(){
@@ -25,7 +24,8 @@ const Home: React.FC = () => {
     } catch (error) {
       console.log(error);
     }
-    voto();
+    votoPosto();
+    votoOrario();
   };
   useIonViewWillEnter(() => {
     console.log('ionViewWillEnter home');
@@ -33,8 +33,41 @@ const Home: React.FC = () => {
     if(pool === ""){}else{nomeSerata=pool;}
   });
 
-function voto(){
-  
+function votoPosto(){
+  let votes = new Map();
+  Users.forEach(element => {
+    if(votes.has(element.place)){
+      votes.set(element.place, votes.get(element.place) + 1)
+    }else{
+      votes.set(element.place, 1)
+    }
+  });
+  let maxvotes = 0;
+  votes.forEach((value, key) => {
+    if(votes.get(key)>maxvotes){
+      maxvotes = votes.get(key);
+      postoVoto = key;
+    }
+  });
+}
+
+function votoOrario(){
+  let oraMinProv = Users[0].oramin;
+  let oraMaxProv = Users[0].oramax;
+  for (let i=0;i<Users.length;i++){
+    let r1s=oraMinProv;
+    let r1e=oraMaxProv;
+    let r2s=Users[i].oramin;
+    let r2e=Users[i].oramax;
+    if (r1s >= r2s && r1s <= r2e || r1e >= r2s && r1e <= r2e || r2s >= r1s && r2s <= r1e || r2e >= r1s && r2e <= r1e) {
+              oraMinProv = r1s > r2s ? r1s : r2s;
+              oraMaxProv = r1e < r2e ? r1e : r2e;
+        } else {
+          orario="Non ci sono orari compatibili";
+          return;
+        }
+    }
+    orario="Orario migliore: dalle "+oraMinProv+" alle "+oraMaxProv;
 }
 
   return (
@@ -50,7 +83,7 @@ function voto(){
           <p>Posto più votato: {postoVoto}</p>
         </IonItem>
         <IonItem>
-          <p>Orario migliore: dalle {oraMinVoto} alle {oraMaxVoto}</p>
+          <p>{orario}</p>
         </IonItem>
       </IonList>
 
