@@ -1,4 +1,4 @@
-import { IonContent, IonList, IonListHeader, IonItem, IonLabel, IonIcon, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonRadioGroup, IonRadio, IonRange, useIonViewWillEnter} from '@ionic/react';
+import { IonContent,IonToast, IonList, IonListHeader, IonItem, IonLabel, IonIcon, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonRadioGroup, IonRadio, IonRange, useIonViewWillEnter} from '@ionic/react';
 import React, { useState } from 'react';
 import { beerOutline, pizza, film, walk, trophyOutline} from 'ionicons/icons';
 import { environment } from '../environments/environment';
@@ -13,12 +13,13 @@ let ListCosa = [
   { value: 'poker', ic:trophyOutline}
 ];
 let ListDove = [
-  { id: 'Vitto'},
-  { id: 'Tesoriera'},
+  { id: 'Casa'},
   { id: 'Parchetto'},
-  { id: 'Sansa'},
   { id: 'Ruffini'},
-  { id: 'Casa'}
+  { id: 'Sansa'},
+  { id: 'Tesoriera'},
+  { id: 'Vitto'},
+  { id: 'in centro'}
 ];
 const Profile: React.FC = () => {
 
@@ -29,6 +30,8 @@ const Profile: React.FC = () => {
     lower: number;
     upper: number;
   }>({ lower: 8, upper: 24 });
+  const [showToast1, setShowToast1] = useState(false);
+  const [showToast2, setShowToast2] = useState(false);
 
   async function updateUser(user: any) {
   try {
@@ -60,6 +63,11 @@ const Profile: React.FC = () => {
       });
     console.log('Success');
     console.log(updateResponse.status);
+    if(updateResponse.status === 200){
+        setShowToast1(true);
+    }else{
+        setShowToast2(true);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -129,6 +137,18 @@ useIonViewWillEnter(() => {
         </div>
       </IonList>
 
+      <IonToast
+        isOpen={showToast1}
+        onDidDismiss={() => setShowToast1(false)}
+        message="Preferenze aggiornate!"
+        duration={500}
+      />
+      <IonToast
+        isOpen={showToast2}
+        onDidDismiss={() => setShowToast2(false)}
+        message="C'è stato un errore, riprova"
+        duration={500}
+      />
       </IonContent>
     </IonPage>
   );

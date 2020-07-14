@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonInput, IonCol, IonRow, IonList, IonItem, IonLabel, IonButton, IonContent, IonIcon, IonToggle, IonCard, IonCardContent} from '@ionic/react';
+import { IonPage,IonToast, IonHeader, IonToolbar, IonTitle, IonInput, IonCol, IonRow, IonList, IonItem, IonLabel, IonButton, IonContent, IonIcon, IonToggle, IonCard, IonCardContent} from '@ionic/react';
 import { moon } from 'ionicons/icons';
 import { environment } from '../environments/environment';
 
@@ -12,11 +12,16 @@ let user={
   place:"",
   act:""
 };
-let pool="roomCode";
+let temporaryUser={tel:""};
+let pool="Serata Epica";
+
 const Settings: React.FC = () => {
     const [name, setName] = useState("");
     const [tel, setTel] = useState("");
     const [roomCode, setRoomCode] = useState("");
+    const [showToast1, setShowToast1] = useState(false);
+    const [showToast2, setShowToast2] = useState(false);
+    const [showToast3, setShowToast3] = useState(false);
 
     const toggleDarkModeHandler = () => {
       document.body.classList.toggle("dark");
@@ -53,9 +58,53 @@ const Settings: React.FC = () => {
           });
         console.log('Success');
         console.log(createResponse.status);
+        if(createResponse.status === 200){
+            setShowToast1(true);
+        }else{
+            setShowToast3(true);
+        }
       } catch (error) {
     console.log(error);
   }
+};
+
+function handleClickNewUser(e:any) {
+  if(name==="" || roomCode==="" || tel===""){
+    setShowToast3(true);
+    return
+  }else{
+  saveUser(e);
+}}
+function handleClickOldUser(e:any) {
+  if(name==="" || roomCode==="" || tel===""){
+    setShowToast3(true);
+    return
+  }else{
+    user.id = name;
+    user.name = name;
+    user.tel=tel;
+    pool=roomCode;
+    selectTel();
+}}
+async function selectTel(){
+  try {
+    console.log(environment.readAll+pool+"/"+name);
+    const output = await fetch(environment.readAll+pool+"/"+name);
+    const outputJSON = await output.json();
+    temporaryUser = outputJSON;
+  } catch (error) {
+    console.log(error);
+  }
+  if(temporaryUser.tel===tel){
+    setShowToast1(true);
+  }else{
+    setShowToast2(true);
+    user.id = "";
+    user.name = "";
+    user.tel= "";
+    pool="";
+  }
+  temporaryUser={tel:""};
 };
 
    return (
@@ -87,8 +136,8 @@ const Settings: React.FC = () => {
           <IonInput required type="text" onIonChange={(e:any) => setName(e.target.value)}></IonInput>
         </IonItem>
         <IonItem>
-          <IonLabel position="stacked">N. Telefono</IonLabel>
-          <IonInput required type="text" onIonChange={(e:any) => setTel(e.target.value)}></IonInput>
+          <IonLabel position="stacked">Codice</IonLabel>
+          <IonInput required type="text" placeholder="La tua password" onIonChange={(e:any) => setTel(e.target.value)}></IonInput>
         </IonItem>
         <IonItem>
           <IonLabel position="stacked">Room</IonLabel>
@@ -98,8 +147,11 @@ const Settings: React.FC = () => {
 
       <IonRow className="ion-padding">
         <IonCol>
-          <IonButton expand="block" color="tertiary" className="ion-activatable ripple-parent" onClick={() => saveUser(user) }>
-           entra
+          <IonButton expand="block" color="tertiary" className="ion-activatable ripple-parent" onClick={() => handleClickNewUser(user) }>
+           Crea
+          </IonButton>
+          <IonButton expand="block" color="tertiary" className="ion-activatable ripple-parent" onClick={() => handleClickOldUser(user) }>
+           Entra
           </IonButton>
         </IonCol>
       </IonRow>
@@ -107,7 +159,24 @@ const Settings: React.FC = () => {
       </IonCardContent>
       </IonCard>
 
-
+      <IonToast
+        isOpen={showToast1}
+        onDidDismiss={() => setShowToast1(false)}
+        message="Benvenuto!"
+        duration={500}
+      />
+      <IonToast
+        isOpen={showToast2}
+        onDidDismiss={() => setShowToast2(false)}
+        message="Codice sbagliato! Esiste già un account a questo nome"
+        duration={500}
+      />
+      <IonToast
+        isOpen={showToast3}
+        onDidDismiss={() => setShowToast3(false)}
+        message="C'è stato un errore, riprova"
+        duration={500}
+      />
     </IonContent>
     </IonPage>
   );

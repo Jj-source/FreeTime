@@ -1,23 +1,23 @@
-import { IonContent, IonHeader,IonGrid,IonRow,IonCol, IonPage, IonTitle, IonToolbar, IonCard,IonCardHeader,IonCardTitle, IonCardContent, IonButton, IonList, IonItem, IonLabel, IonRange, useIonViewWillEnter} from '@ionic/react';
+import { IonContent, IonText,IonHeader,IonGrid,IonRow,IonCol, IonPage, IonTitle, IonToolbar, IonCard,IonCardHeader,IonCardTitle, IonCardContent, IonButton, IonList, IonItem, IonLabel, IonRange, useIonViewWillEnter} from '@ionic/react';
 import React from 'react';
 import './Home.css';
 import { environment } from '../environments/environment';
 import { pool } from './Settings';
 
 let Users = [
-  {id:"id1", name: 'nome1', oramin: 8, oramax:12, act:"mangiare", place:"a casa" },
-  {id:"id2", name: 'nome2', oramin: 8, oramax:12, act:"mangiare", place:"a casa" },
-  {id:"id3", name: 'nome3', oramin: 8, oramax:12, act:"mangiare", place:"a casa" },
-  {id:"id4", name: 'nome4', oramin: 8, oramax:12, act:"mangiare", place:"a casa" }
+  {id:"id1", name: 'Jacopo', oramin: 15, oramax:24, act:"Mangiare fuori", place:"Tesoriera" },
 ];
 let nomeSerata="Home";
+let postoVoto="Tesoriera";
+let oraMinVoto="15";
+let oraMaxVoto="24";
 const Home: React.FC = () => {
 
   async function selectAll(){
     try {
       console.log(environment.readAll+pool);
       console.log('calling read all endpoint');
-      const output = await fetch(environment.readAll+ pool);
+      const output = await fetch(environment.readAll+pool);
       const outputJSON = await output.json();
       Users = Array.from(outputJSON);
       console.log('Success');
@@ -25,12 +25,17 @@ const Home: React.FC = () => {
     } catch (error) {
       console.log(error);
     }
+    voto();
   };
   useIonViewWillEnter(() => {
     console.log('ionViewWillEnter home');
     selectAll();
-    nomeSerata=pool;
+    if(pool === ""){}else{nomeSerata=pool;}
   });
+
+function voto(){
+  
+}
 
   return (
     <IonPage>
@@ -41,12 +46,12 @@ const Home: React.FC = () => {
   </IonHeader>
       <IonContent fullscreen>
       <IonList>
-      {Users.map(({id, name, oramin, oramax}, i) => (
-        <IonItem key={i}>
-          <IonLabel>{name}</IonLabel>
-          <IonRange id={"questo"} dualKnobs={true} disabled={true} min={8} max={24} step={0.5} snaps={true} />
+        <IonItem>
+          <p>Posto più votato: {postoVoto}</p>
         </IonItem>
-      ))}
+        <IonItem>
+          <p>Orario migliore: dalle {oraMinVoto} alle {oraMaxVoto}</p>
+        </IonItem>
       </IonList>
 
       {Users.map(({name, place, act, oramin, oramax}, i) => (
