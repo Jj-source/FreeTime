@@ -43,6 +43,7 @@ const Profile: React.FC = () => {
       roomCode:pool,
       id: user.id,
       name:user.name,
+      tel:user.tel,
       oramin: user.oramin,
       oramax:user.oramax,
       place:user.place,

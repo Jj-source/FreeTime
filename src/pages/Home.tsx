@@ -10,7 +10,7 @@ let Users = [
   {id:"id3", name: 'nome3', oramin: 8, oramax:12, act:"mangiare", place:"a casa" },
   {id:"id4", name: 'nome4', oramin: 8, oramax:12, act:"mangiare", place:"a casa" }
 ];
-
+let nomeSerata="Home";
 const Home: React.FC = () => {
 
   async function selectAll(){
@@ -29,13 +29,14 @@ const Home: React.FC = () => {
   useIonViewWillEnter(() => {
     console.log('ionViewWillEnter home');
     selectAll();
+    nomeSerata=pool;
   });
 
   return (
     <IonPage>
     <IonHeader translucent>
     <IonToolbar>
-      <IonTitle>Home</IonTitle>
+      <IonTitle>{nomeSerata}</IonTitle>
     </IonToolbar>
   </IonHeader>
       <IonContent fullscreen>

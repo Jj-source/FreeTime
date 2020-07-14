@@ -6,6 +6,7 @@ import { environment } from '../environments/environment';
 let user={
   id:"",
   name:"",
+  tel:"",
   oramin: "",
   oramax:"",
   place:"",
@@ -14,6 +15,7 @@ let user={
 let pool="roomCode";
 const Settings: React.FC = () => {
     const [name, setName] = useState("");
+    const [tel, setTel] = useState("");
     const [roomCode, setRoomCode] = useState("");
 
     const toggleDarkModeHandler = () => {
@@ -24,15 +26,17 @@ const Settings: React.FC = () => {
       try {
         user.id = name;
         user.name = name;
+        user.tel=tel;
         pool=roomCode;
         console.log(environment.create);
         console.log('calling create user endpoint with: ' + user.name);
 
         const requestBody = {
           roomCode:roomCode,
-          id: user.id,
+          id:user.id,
           name:user.name,
-          oramin: user.oramin,
+          tel:user.tel,
+          oramin:user.oramin,
           oramax:user.oramax,
           place:user.place,
           act:user.act
@@ -83,6 +87,10 @@ const Settings: React.FC = () => {
           <IonInput required type="text" onIonChange={(e:any) => setName(e.target.value)}></IonInput>
         </IonItem>
         <IonItem>
+          <IonLabel position="stacked">N. Telefono</IonLabel>
+          <IonInput required type="text" onIonChange={(e:any) => setTel(e.target.value)}></IonInput>
+        </IonItem>
+        <IonItem>
           <IonLabel position="stacked">Room</IonLabel>
           <IonInput required type="text" placeholder="scrivi un nome facile da condividere!" onIonChange={(e:any) => setRoomCode(e.target.value)}></IonInput>
         </IonItem>
@@ -91,13 +99,15 @@ const Settings: React.FC = () => {
       <IonRow className="ion-padding">
         <IonCol>
           <IonButton expand="block" color="tertiary" className="ion-activatable ripple-parent" onClick={() => saveUser(user) }>
-           crea
+           entra
           </IonButton>
         </IonCol>
       </IonRow>
 
       </IonCardContent>
       </IonCard>
+
+
     </IonContent>
     </IonPage>
   );

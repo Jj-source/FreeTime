@@ -22,6 +22,7 @@ app.post('/api/create', (req, res) => {
           await db.collection(req.body.roomCode).doc('/' + req.body.id + '/')
               .create({
                 name: req.body.name,
+                tel: req.body.tel,
                 oramin: req.body.oramin,
                 oramax: req.body.oramax,
                 place:req.body.place,
@@ -62,6 +63,7 @@ app.get('/api/read/:roomCode/:user_id', (req, res) => {
                 const selectedUser = {
                   id: doc.id,
                   name: doc.data().name,
+                  tel: doc.data().tel,
                   oramin: doc.data().oramin,
                   oramax: doc.data().oramax,
                   place:doc.data().place,
@@ -85,6 +87,7 @@ app.get('/api/read/:roomCode/:user_id', (req, res) => {
                 const document = db.collection(req.body.roomCode).doc(req.params.user_id);
                 await document.update({
                     name: req.body.name,
+                    tel: req.body.tel,
                     oramin: req.body.oramin,
                     oramax: req.body.oramax,
                     place:req.body.place,
